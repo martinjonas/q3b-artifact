@@ -3,7 +3,7 @@
 <benchmark tool="tools.q3b"
            timelimit="1 min"
            hardtimelimit="1 min"
-           memlimit="16 GB"
+           memlimit="8 GB"
            cpuCores="3">
 
    <rundefinition name="q3b">

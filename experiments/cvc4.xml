@@ -3,7 +3,7 @@
 <benchmark tool="tools.cvc4"
            timelimit="1 min"
            hardtimelimit="1 min"
-           memlimit="16 GB"
+           memlimit="8 GB"
            cpuCores="1">
 
    <rundefinition name="q3b">
