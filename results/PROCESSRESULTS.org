@@ -2,6 +2,7 @@
 #+SUBTITLE: Experimental evaluation
 #+AUTHOR: Martin Jonáš
 #+OPTIONS: ^:nil
+#+PROPERTY: header-args :tangle yes
 
 # -*- mode: org; -*-
 
@@ -75,15 +76,15 @@
     *unsat* to have the maximal values of walltime and CPU-time.
 
     #+BEGIN_SRC R :results output :session :exports code
-    timeout <- 60
+    timeout <- 1200
 
     res[['trivial']] <- TRUE
 
     for (c in configurations)
     {
       res[[paste(c, 'solved', sep='.')]] <- res[[paste(c, 'result', sep='.')]] == "sat" | res[[paste(c, 'result', sep='.')]] == "unsat"
-      res[[paste(c, 'cputime', sep='.')]][!res[[paste(c, 'solved', sep='.')]]] <- timeout
-      res[[paste(c, 'walltime', sep='.')]][!res[[paste(c, 'solved', sep='.')]]] <- timeout
+      #res[[paste(c, 'cputime', sep='.')]][!res[[paste(c, 'solved', sep='.')]]] <- timeout
+      #res[[paste(c, 'walltime', sep='.')]][!res[[paste(c, 'solved', sep='.')]]] <- timeout
       res[['trivial']] <- res[['trivial']] & res[[paste(c, 'cputime', sep='.')]] < 0.1
     }
     #+END_SRC
@@ -135,10 +136,10 @@
       #+RESULTS:
       | result            | boolector | cvc4 |  q3b |   z3 |
       |-------------------+-----------+------+------+------|
-      | OUT OF MEMORY     |       nil |  nil |  nil |    4 |
-      | sat               |       562 |  416 |  558 |  557 |
-      | TIMEOUT (timeout) |       343 |  353 |  244 |  295 |
-      | unsat             |      4846 | 4982 | 4949 | 4895 |
+      | OUT OF MEMORY     |       nil |  nil |   12 |   14 |
+      | sat               |       610 |  556 |  621 |  563 |
+      | TIMEOUT (timeout) |       258 |  225 |  129 |  266 |
+      | unsat             |      4883 | 4970 | 4989 | 4908 |
 
 
 *** Solved formulas in benchmark families
@@ -166,15 +167,15 @@
     #+RESULTS:
     | family                              | total | boolector | cvc4 |  q3b |   z3 |
     |-------------------------------------+-------+-----------+------+------+------|
-    | 2017-Preiner-keymaera               |  4035 |      3995 | 3955 | 4006 | 4029 |
-    | 2017-Preiner-psyco                  |   194 |       189 |  194 |  136 |  194 |
-    | 2017-Preiner-scholl-smt08           |   374 |       278 |  163 |  293 |  268 |
+    | 2017-Preiner-keymaera               |  4035 |      4021 | 3997 | 4009 | 4031 |
+    | 2017-Preiner-psyco                  |   194 |       193 |  190 |  182 |  194 |
+    | 2017-Preiner-scholl-smt08           |   374 |       312 |  248 |  319 |  272 |
     | 2017-Preiner-tptp                   |    73 |        69 |   73 |   73 |   73 |
-    | 2017-Preiner-UltimateAutomizer      |   153 |       150 |  151 |  153 |  153 |
-    | 20170501-Heizmann-UltimateAutomizer |   131 |        29 |  124 |  122 |   29 |
-    | 2018-Preiner-cav18                  |   600 |       538 |  565 |  561 |  546 |
-    | wintersteiger                       |   191 |       160 |  173 |  163 |  160 |
-    | Total                               |  5751 |      5408 | 5398 | 5507 | 5452 |
+    | 2017-Preiner-UltimateAutomizer      |   153 |       152 |  151 |  153 |  153 |
+    | 20170501-Heizmann-UltimateAutomizer |   131 |        30 |  128 |  124 |   32 |
+    | 2018-Preiner-cav18                  |   600 |       553 |  565 |  565 |  553 |
+    | wintersteiger                       |   191 |       163 |  174 |  185 |  163 |
+    | Total                               |  5751 |      5493 | 5526 | 5610 | 5471 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
     maxTable <- transmute(table,
@@ -186,8 +187,8 @@
       Z3 = ifelse(z3 == maxSolved, sprintf("\\textbf{%d}", z3), z3)
 )
 
-    xt <- xtable(maxTable, type = "latex",
-      caption = "TODO.")
+    xt <- xtable(maxTable, type = "latex", label="tbl:solved",
+      caption = "For each solver and benchmark family, the table shows the number of benchmarks solved from this benchmark family by the solver.")
     align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
     print(xt,
           file = "tables/solved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(table)-1, nrow(table)),
@@ -197,120 +198,209 @@
 
 ***** Only sat
     #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      res %>%
-        filter(z3.result == 'sat' | boolector.result == 'sat' | cvc4.result == 'sat'  | q3b.result == 'sat' ) %>%
+    satTable <- res %>%
+        filter(z3.result == 'sat' | boolector.result == 'sat' | cvc4.result == 'sat' | q3b.result == 'sat') %>%
         group_by(family) %>%
-        summarise(boolector = sum(boolector.solved),
+        summarise(total = sum(n()),
+                  boolector = sum(boolector.solved),
                   cvc4 = sum(cvc4.solved),
+                  q3b = sum(q3b.solved),
                   z3 = sum(z3.solved),
-                  q3b = sum(q3b.solved))
+                  maxSolved = max(boolector, cvc4, q3b, z3))
+
+    satTable <- rbind(satTable, data.frame(family='Total',
+       total = sum(satTable$total),
+       boolector = sum(satTable$boolector),
+       cvc4 = sum(satTable$cvc4),
+       q3b = sum(satTable$q3b),
+       z3 = sum(satTable$z3),
+       maxSolved = max(sum(satTable$boolector), sum(satTable$cvc4), sum(satTable$q3b), sum(satTable$z3))))
+
+    satTable %>% select(family, total, boolector, cvc4, q3b, z3)
     #+END_SRC
 
     #+RESULTS:
-    | family                              | boolector | cvc4 |  z3 | q3b |
-    |-------------------------------------+-----------+------+-----+-----|
-    | 2017-Preiner-keymaera               |        79 |   34 | 108 | 103 |
-    | 2017-Preiner-psyco                  |       131 |  132 | 132 |  96 |
-    | 2017-Preiner-scholl-smt08           |       226 |  117 | 202 | 229 |
-    | 2017-Preiner-tptp                   |        16 |   17 |  17 |  17 |
-    | 2017-Preiner-UltimateAutomizer      |        15 |   14 |  16 |  16 |
-    | 20170501-Heizmann-UltimateAutomizer |        18 |   17 |  13 |  20 |
-    | wintersteiger                       |        77 |   85 |  69 |  77 |
+    | family                              | total | boolector | cvc4 | q3b |  z3 |
+    |-------------------------------------+-------+-----------+------+-----+-----|
+    | 2017-Preiner-keymaera               |   108 |       104 |   78 | 104 | 108 |
+    | 2017-Preiner-psyco                  |   132 |       131 |  129 | 123 | 132 |
+    | 2017-Preiner-scholl-smt08           |   257 |       247 |  214 | 249 | 204 |
+    | 2017-Preiner-tptp                   |    17 |        16 |   17 |  17 |  17 |
+    | 2017-Preiner-UltimateAutomizer      |    16 |        16 |   14 |  16 |  16 |
+    | 20170501-Heizmann-UltimateAutomizer |    21 |        19 |   19 |  20 |  15 |
+    | wintersteiger                       |    93 |        77 |   85 |  92 |  71 |
+    | Total                               |   644 |       610 |  556 | 621 | 563 |
+
+    #+BEGIN_SRC R :results none :colnames yes :session :exports both
+    maxSatTable <- transmute(satTable,
+      Family = family,
+      Total = total,
+      Boolector = ifelse(boolector == maxSolved, sprintf("\\textbf{%d}", boolector), boolector),
+      CVC4 = ifelse(cvc4 == maxSolved, sprintf("\\textbf{%d}", cvc4), cvc4),
+      Q3B = ifelse(q3b == maxSolved, sprintf("\\textbf{%d}", q3b), q3b),
+      Z3 = ifelse(z3 == maxSolved, sprintf("\\textbf{%d}", z3), z3)
+)
+
+    xt <- xtable(maxSatTable, type = "latex", label="tbl:satSolved",
+      caption = "For each solver and benchmark family, the table shows the number of \\emph{satisfiable} benchmarks solved from this benchmark family by the solver.")
+    align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
+    print(xt,
+          file = "tables/satSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(satTable)-1, nrow(satTable)),
+          sanitize.text.function=function(x) x)
+    #+END_SRC
 
 ***** Only unsat
     #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      res %>%
+    unsatTable <- res %>%
         filter(z3.result == 'unsat' | boolector.result == 'unsat' | cvc4.result == 'unsat' | q3b.result == 'unsat') %>%
         group_by(family) %>%
-        summarise(boolector = sum(boolector.solved),
+        summarise(total = sum(n()),
+                  boolector = sum(boolector.solved),
                   cvc4 = sum(cvc4.solved),
+                  q3b = sum(q3b.solved),
                   z3 = sum(z3.solved),
-                  q3b = sum(q3b.solved))
+                  maxSolved = max(boolector, cvc4, q3b, z3))
+
+    unsatTable <- rbind(unsatTable, data.frame(family='Total',
+       total = sum(unsatTable$total),
+       boolector = sum(unsatTable$boolector),
+       cvc4 = sum(unsatTable$cvc4),
+       q3b = sum(unsatTable$q3b),
+       z3 = sum(unsatTable$z3),
+       maxSolved = max(sum(unsatTable$boolector), sum(unsatTable$cvc4), sum(unsatTable$q3b), sum(unsatTable$z3))))
+
+    unsatTable %>% select(family, total, boolector, cvc4, q3b, z3)
     #+END_SRC
 
     #+RESULTS:
-    | family                              | boolector | cvc4 |   z3 |  q3b |
-    |-------------------------------------+-----------+------+------+------|
-    | 2017-Preiner-keymaera               |      3916 | 3921 | 3921 | 3903 |
-    | 2017-Preiner-psyco                  |        58 |   62 |   62 |   40 |
-    | 2017-Preiner-scholl-smt08           |        52 |   46 |   66 |   64 |
-    | 2017-Preiner-tptp                   |        53 |   56 |   56 |   56 |
-    | 2017-Preiner-UltimateAutomizer      |       135 |  137 |  137 |  137 |
-    | 20170501-Heizmann-UltimateAutomizer |        11 |  107 |   16 |  102 |
-    | 2018-Preiner-cav18                  |       538 |  565 |  546 |  561 |
-    | wintersteiger                       |        83 |   88 |   91 |   86 |
+    | family                              | total | boolector | cvc4 |  q3b |   z3 |
+    |-------------------------------------+-------+-----------+------+------+------|
+    | 2017-Preiner-keymaera               |  3925 |      3917 | 3919 | 3905 | 3923 |
+    | 2017-Preiner-psyco                  |    62 |        62 |   61 |   59 |   62 |
+    | 2017-Preiner-scholl-smt08           |    76 |        65 |   34 |   70 |   68 |
+    | 2017-Preiner-tptp                   |    56 |        53 |   56 |   56 |   56 |
+    | 2017-Preiner-UltimateAutomizer      |   137 |       136 |  137 |  137 |  137 |
+    | 20170501-Heizmann-UltimateAutomizer |   110 |        11 |  109 |  104 |   17 |
+    | 2018-Preiner-cav18                  |   590 |       553 |  565 |  565 |  553 |
+    | wintersteiger                       |    94 |        86 |   89 |   93 |   92 |
+    | Total                               |  5050 |      4883 | 4970 | 4989 | 4908 |
+
+    #+BEGIN_SRC R :results none :colnames yes :session :exports both
+    maxUnsatTable <- transmute(unsatTable,
+      Family = family,
+      Total = total,
+      Boolector = ifelse(boolector == maxSolved, sprintf("\\textbf{%d}", boolector), boolector),
+      CVC4 = ifelse(cvc4 == maxSolved, sprintf("\\textbf{%d}", cvc4), cvc4),
+      Q3B = ifelse(q3b == maxSolved, sprintf("\\textbf{%d}", q3b), q3b),
+      Z3 = ifelse(z3 == maxSolved, sprintf("\\textbf{%d}", z3), z3)
+)
+
+    xt <- xtable(maxUnsatTable, type = "latex", label="tbl:unsatSolved",
+      caption = "For each solver and benchmark family, the table shows the number of \\emph{unsatisfiable} benchmarks solved from this benchmark family by the solver.")
+    align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
+    print(xt,
+          file = "tables/unsatSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(unsatTable)-1, nrow(unsatTable)),
+          sanitize.text.function=function(x) x)
+    #+END_SRC
+
 
 *** Uniquely solved benchmarks
 
 ***** Only by Z3
       #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      	res %>%
+      z3Unique <- res %>%
           filter(z3.solved & !boolector.solved & !cvc4.solved & !q3b.solved) %>%
           select(family, benchmark) %>%
           group_by(family) %>%
-          summarise(count = n())
+          summarise(count = n()) %>%
+          rename(Z3 = count)
       #+END_SRC
 
       #+RESULTS:
-      | family                    | count |
-      |---------------------------+-------|
-      | 2017-Preiner-keymaera     |     2 |
-      | 2017-Preiner-scholl-smt08 |     4 |
-      | wintersteiger             |     1 |
+      | family                    | Z3 |
+      |---------------------------+----|
+      | 2017-Preiner-keymaera     |  3 |
+      | 2017-Preiner-psyco        |  1 |
+      | 2017-Preiner-scholl-smt08 |  1 |
+      | wintersteiger             |  1 |
 
 ***** Only by Boolector
       #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      	res %>%
+      	boolectorUnique <- res %>%
           filter(!z3.solved & boolector.solved & !cvc4.solved & !q3b.solved) %>%
           select(family, benchmark) %>%
           group_by(family) %>%
-          summarise(count = n())
+          summarise(count = n()) %>%
+          rename(Boolector = count)
       #+END_SRC
 
       #+RESULTS:
-      | family                              | count |
-      |-------------------------------------+-------|
-      | 2017-Preiner-keymaera               |     1 |
-      | 2017-Preiner-scholl-smt08           |     6 |
-      | 20170501-Heizmann-UltimateAutomizer |     1 |
-      | 2018-Preiner-cav18                  |     1 |
-      | wintersteiger                       |     1 |
+      | family                    | Boolector |
+      |---------------------------+-----------|
+      | 2017-Preiner-keymaera     |         1 |
+      | 2017-Preiner-scholl-smt08 |         7 |
 
 ***** Only by CVC4
       #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      	res %>%
+      	cvc4Unique <- res %>%
           filter(!z3.solved & !boolector.solved & cvc4.solved & !q3b.solved) %>%
           select(family, benchmark) %>%
           group_by(family) %>%
-          summarise(count = n())
+          summarise(count = n()) %>%
+          rename(CVC4 = count)
       #+END_SRC
 
       #+RESULTS:
-      | family                              | count |
-      |-------------------------------------+-------|
-      | 2017-Preiner-keymaera               |     1 |
-      | 2017-Preiner-scholl-smt08           |     1 |
-      | 20170501-Heizmann-UltimateAutomizer |     3 |
-      | wintersteiger                       |     2 |
+      | family                              | CVC4 |
+      |-------------------------------------+------|
+      | 2017-Preiner-scholl-smt08           |    2 |
+      | 20170501-Heizmann-UltimateAutomizer |    3 |
+      | wintersteiger                       |    1 |
 
 
 ***** Only by Q3B
       #+BEGIN_SRC R :results value :colnames yes :session :exports both
-      	res %>%
+      	q3bUnique <- res %>%
           filter(!z3.solved & !boolector.solved & !cvc4.solved & q3b.solved) %>%
           select(family, benchmark) %>%
           group_by(family) %>%
-          summarise(count = n())
+          summarise(count = n()) %>%
+          rename(Q3B = count)
       #+END_SRC
 
       #+RESULTS:
-      | family                              | count |
-      |-------------------------------------+-------|
-      | 2017-Preiner-keymaera               |     1 |
-      | 2017-Preiner-scholl-smt08           |    15 |
-      | 20170501-Heizmann-UltimateAutomizer |     1 |
-      | 2018-Preiner-cav18                  |    12 |
-      | wintersteiger                       |     2 |
+      | family                              | Q3B |
+      |-------------------------------------+-----|
+      | 2017-Preiner-keymaera               |   1 |
+      | 2017-Preiner-scholl-smt08           |   8 |
+      | 20170501-Heizmann-UltimateAutomizer |   1 |
+      | 2018-Preiner-cav18                  |  11 |
+      | wintersteiger                       |   4 |
+
+***** Merged table
+      #+BEGIN_SRC R :results value :colnames yes :session :exports both
+      uniqSolved <- Reduce(function(...) merge(..., all=TRUE), list(boolectorUnique, cvc4Unique, q3bUnique, z3Unique))
+      #+END_SRC
+
+      #+RESULTS:
+      | family                              | Boolector | CVC4 | Q3B |  Z3 |
+      |-------------------------------------+-----------+------+-----+-----|
+      | 2017-Preiner-keymaera               | 1         | nil  |   1 |   3 |
+      | 2017-Preiner-psyco                  | nil       | nil  | nil |   1 |
+      | 2017-Preiner-scholl-smt08           | 7         | 2    |   8 |   1 |
+      | 20170501-Heizmann-UltimateAutomizer | nil       | 3    |   1 | nil |
+      | 2018-Preiner-cav18                  | nil       | nil  |  11 | nil |
+      | wintersteiger                       | nil       | 1    |   4 |   1 |
+
+    #+BEGIN_SRC R :results none :colnames yes :session :exports both
+    xt <- xtable(uniqSolved, type = "latex", label="tbl:uniquelySolved",
+      caption = "For each solver and benchmark family, the table shows the number of benchmarks solved only by the given solver.")
+    align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r')
+    print(xt,
+          file = "tables/uniqueSolved.tex", include.rownames=FALSE, booktabs=TRUE,
+          sanitize.text.function=function(x) x,
+          NA.string="0")
+    #+END_SRC
 
 ***** By none of the solvers
       #+BEGIN_SRC R :results value :colnames yes :session :exports both
@@ -324,10 +414,10 @@
       #+RESULTS:
       | family                    | count |
       |---------------------------+-------|
-      | 2017-Preiner-keymaera     |     3 |
-      | 2017-Preiner-scholl-smt08 |    55 |
+      | 2017-Preiner-keymaera     |     2 |
+      | 2017-Preiner-scholl-smt08 |    41 |
       | 2018-Preiner-cav18        |    10 |
-      | wintersteiger             |     6 |
+      | wintersteiger             |     4 |
 
 *** Cross comparison
 
@@ -352,8 +442,7 @@
 
         formulasFirstIsBetter <- function(c1, c2)
         {
-          return(res[firstIsBetter(c1, c2)]
-)
+          return(res[firstIsBetter(c1, c2)])
         }
 
         compareConfigurations <- function(c1, c2)
@@ -395,15 +484,15 @@
       #+RESULTS:
       |           | Boolector | CVC4 | Q3B |  Z3 |
       |-----------+-----------+------+-----+-----|
-      | Boolector |         0 |  199 | 140 |  62 |
-      | CVC4      |       189 |    0 | 137 | 173 |
-      | Q3B       |       239 |  246 |   0 | 204 |
-      | Z3        |       106 |  227 | 149 |   0 |
+      | Boolector |         0 |  123 |  69 |  78 |
+      | CVC4      |       156 |    0 |  60 | 171 |
+      | Q3B       |       186 |  144 |   0 | 208 |
+      | Z3        |        56 |  116 |  69 |   0 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
-    print(xtable(table, type = "latex",
-    caption = "TODO."),
-    file = "tables/cross.tex", include.rownames=TRUE, booktabs=TRUE)
+      print(xtable(table, type = "latex", label="tbl:cross",
+                   caption = "The table shows cross-comparison of solved benchmarks by all pairs of the solvers. Each cell shows the number of benchmarks that were solved by the solver in the corresponding row, but not by the solver by the corresponding column."),
+            file = "tables/cross.tex", include.rownames=TRUE, booktabs=TRUE)
     #+END_SRC
 
 * Plots
@@ -462,6 +551,12 @@
       #+RESULTS:
       [[file:figures/all_quantile.svg]]
 
+    #+BEGIN_SRC R :results none :session :noweb yes
+    pdf(file="figures/all_quantile.pdf",width=8,height=4); tryCatch({
+    quantilePlot(FALSE)
+    },error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()
+    #+END_SRC
+
 *** Quantile plots of non-trivial benchmarks
     This plot shows only result that are not trivial (i.e. some solver
     took more than 0.1 second to solve it)
@@ -472,21 +567,20 @@
     #+END_SRC
 
     #+RESULTS:
-    : 3459
+    : 3461
 
-    #+BEGIN_SRC R :results output graphics :file figures/all_trivial_quantile.svg :session :exports both :width 8 :height 5
-      quantilePlot(TRUE)
+    #+BEGIN_SRC R :results output graphics :file figures/all_trivial_quantile.svg :session :exports both :width 8 :height 4
+    quantilePlot(TRUE)
     #+END_SRC
 
     #+RESULTS:
     [[file:figures/all_trivial_quantile.svg]]
 
-    #+BEGIN_SRC R :results output graphics :file figures/all_trivial_quantile.pdf :session :exports code :width 8 :height 5
-      quantilePlot(TRUE)
+    #+BEGIN_SRC R :results none :session :noweb yes
+    pdf(file="figures/all_trivial_quantile.pdf",width=8,height=4); tryCatch({
+    quantilePlot(TRUE)
+    },error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()
     #+END_SRC
-
-    #+RESULTS:
-    [[file:figures/all_trivial_quantile.pdf]]
 
 *** Unsolved benchmarks
 
@@ -506,6 +600,10 @@
               unsolved <- rbind(unsolved, cUnsolved)
           }
 
+          print(levels(unsolved$family))
+          unsolved$family<- factor(unsolved$family, levels=sort(levels(unsolved$family)))
+          print(levels(unsolved$family))
+
           chart.data <- unsolved %>%
                           group_by(family, configuration) %>%
                           summarize(freq = n()) %>%
@@ -517,7 +615,7 @@
               geom_bar(stat="identity") +
               coord_flip() +
               geom_text(data=chart.data, aes(x = configuration, y = pos, label = freq), size=3) +
-              labs(y = "Number of unsolved benchmarks (less is better)", x = NULL, fill = "Benchmark set") +
+              labs(y = "Number of unsolved benchmarks (less is better)", x = NULL, fill = "Benchmark family") +
               scale_fill_brewer(palette = "Set2")
       }
     #+END_SRC
@@ -525,15 +623,44 @@
     #+RESULTS:
 
     #+BEGIN_SRC R :results output graphics :file unsolved.svg :session :exports both :width 8 :height 3
-      plotUnsolved(c('boolector', 'cvc4', 'q3b', 'z3'))
+    plotUnsolved(c('boolector', 'cvc4', 'q3b', 'z3'))
     #+END_SRC
 
     #+RESULTS:
     [[file:unsolved.svg]]
 
-    #+BEGIN_SRC R :results output graphics :file figures/unsolved.pdf :session :exports none :width 8 :height 3
-      plotUnsolved(c('boolector', 'cvc4', 'z3', 'q3b'))
+
+    #+BEGIN_SRC R :results none :session :noweb yes
+    pdf(file="figures/unsolved.pdf",width=8,height=3); tryCatch({
+    plotUnsolved(c('boolector', 'cvc4', 'z3', 'q3b'))
+    },error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()
+    #+END_SRC
+
+*** Box plots
+    #+NAME: boxplot
+    #+BEGIN_SRC R :session
+    allSolved <- res %>% filter(boolector.solved & cvc4.solved & q3b.solved & z3.solved)
+    data <- bind_rows(allSolved %>% transmute(solver = "boolector", walltime = boolector.walltime),
+                      allSolved %>% transmute(solver = "cvc4", walltime = cvc4.walltime),
+                      allSolved %>% transmute(solver = "q3b", walltime = q3b.walltime),
+                      allSolved %>% transmute(solver = "z3", walltime = z3.walltime))
+
+    ggplot(data, aes(x = solver, y = walltime, color=solver), log10="y") +
+      geom_boxplot() +
+      scale_y_log10()
+    #+END_SRC
+
+    #+RESULTS: boxplot
+
+    #+BEGIN_SRC R :results output graphics :file figures/boxplot.svg :session :exports both :width 8 :height 5 :noweb yes
+    <<boxplot>>
     #+END_SRC
 
     #+RESULTS:
-    [[file:figures/unsolved.pdf]]
+    [[file:figures/boxplot.svg]]
+
+    #+BEGIN_SRC R :results none :session :noweb yes
+    pdf(file="figures/boxplot.pdf",width=8,height=5); tryCatch({
+    <<boxplot>>
+    },error=function(e){plot(x=-1:1, y=-1:1, type='n', xlab='', ylab='', axes=FALSE); text(x=0, y=0, labels=e$message, col='red'); paste('ERROR', e$message, sep=' : ')}); dev.off()
+    #+END_SRC
