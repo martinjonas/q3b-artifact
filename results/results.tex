@@ -1,0 +1,46 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+
+\begin{document}
+
+\input{tables/solved}
+
+\input{tables/satSolved}
+
+\input{tables/unsatSolved}
+
+\input{tables/uniqueSolved}
+
+\input{tables/cross}
+
+\begin{figure}[h]
+  \includegraphics[width=\textwidth]{figures/all_quantile.pdf}
+  \label{fig:nontrivialQuantile}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/all_trivial_quantile.pdf}
+  \label{fig:quantile}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/unsolved.pdf}
+  \label{fig:unsolved}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{figures/boxplot.pdf}
+  \label{fig:boxplot}
+\end{figure}
+
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
