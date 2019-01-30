@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE benchmark PUBLIC "+//IDN sosy-lab.org//DTD BenchExec benchmark 1.4//EN" "http://www.sosy-lab.org/benchexec/benchmark-1.4.dtd">
 <benchmark tool="tools.cvc4"
-           timelimit="1 min"
-           hardtimelimit="1 min"
+           timelimit="20 min"
+           hardtimelimit="20 min"
            memlimit="8 GB"
            cpuCores="1">
 
-   <rundefinition name="q3b">
+   <rundefinition name="cvc4">
+     <option>--no-cond-rewrite-quant</option> 
+     <option>--cbqi-bv-ineq=eq-boundary</option>
+     <option>--global-negate</option> 
+     <option>--no-cbqi-innermost</option> 
+     <option>--ext-rew-prep</option>
    </rundefinition>
 
   <tasks name="PreinerCAV">
