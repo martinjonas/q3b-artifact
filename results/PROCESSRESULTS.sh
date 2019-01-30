@@ -5,3 +5,6 @@ tail -n +4 data.table.csv >> data.csv
 
 sed -i 's#/#,##' data.csv
 #separator is #, so we do not have to escape all backslashes
+
+mkdir figures
+mkdir tables

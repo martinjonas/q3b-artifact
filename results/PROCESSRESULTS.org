@@ -49,6 +49,14 @@
 
     #+RESULTS:
 
+*** Create directories for figures and tables
+    We also create directories in which we later generate figures and tables.
+
+    #+BEGIN_SRC sh
+    mkdir figures
+    mkdir tables
+    #+END_SRC
+
 
 * R environment
 *** Load necessary libraries
