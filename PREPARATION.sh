@@ -5,8 +5,6 @@ echo ae | sudo -S dpkg -i benchexec_*.deb 2>&1
 
 echo ae | sudo -S adduser cav benchexec
 
-reboot
-
 mkdir solvers
 cd solvers
 

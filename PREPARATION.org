@@ -2,7 +2,7 @@
 
 * How we prepared the artifact
 ** BenchExec
-   #+BEGIN_SRC emacs-lisp :results output silent
+   #+BEGIN_SRC emacs-lisp :results output silent :tangle no
    (require 'ob-sh)
    #+END_SRC
 
@@ -19,10 +19,6 @@
 
    #+BEGIN_SRC sh :results output silent
    echo ae | sudo -S adduser cav benchexec
-   #+END_SRC
-
-   #+BEGIN_SRC sh :results none
-   reboot
    #+END_SRC
 ** Solvers
    Now, we need to download and install all the solvers. First, we create a new directory:
@@ -353,6 +349,6 @@
    echo ae | sudo -S apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev
    #+END_SRC
 
-   #+BEGIN_SRC sh :results output silent
+   #+BEGIN_SRC R :results output silent
    install.packages(c("tidyverse", "xtable"), dependencies=TRUE)
    #+END_SRC
