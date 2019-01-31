@@ -261,15 +261,15 @@
     -- Detecting CXX compile features
     -- Detecting CXX compile features - done
     -- No Build type specified; using RELEASE.
-    -- Found OpenMP_C: -fopenmp (found version "4.5") 
-    -- Found OpenMP_CXX: -fopenmp (found version "4.5") 
-    -- Found OpenMP: TRUE (found version "4.5")  
+    -- Found OpenMP_C: -fopenmp (found version "4.5")
+    -- Found OpenMP_CXX: -fopenmp (found version "4.5")
+    -- Found OpenMP: TRUE (found version "4.5")
     -- Looking for pthread.h
     -- Looking for pthread.h - found
     -- Looking for pthread_create
     -- Looking for pthread_create - found
-    -- Found Threads: TRUE  
-    -- Found ANTLR: /usr/share/java/antlr-4.7.2-complete.jar (found version "4.7.2") 
+    -- Found Threads: TRUE
+    -- Found ANTLR: /usr/share/java/antlr-4.7.2-complete.jar (found version "4.7.2")
     -- Configuring done
     -- Generating done
     -- Build files have been written to: /home/cav/artifact/solvers/Q3B/Q3B/build
@@ -339,9 +339,18 @@
    #+BEGIN_SRC sh :results output silent
    cd /home/cav/artifact
    mkdir benchmarks
-   cd benchmarks 
+   cd benchmarks
    wget http://smt-lib.loria.fr/zip/BV.zip
    unzip BV.zip
    rm BV.zip
    #+END_SRC
 
+** R
+   #+BEGIN_SRC sh :results output silent
+   echo ae | sudo -S apt-get install -y r-base texlive
+   echo ae | sudo -S apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results output silent
+   install.packages(c("tidyverse", "xtable"))
+   #+END_SRC
