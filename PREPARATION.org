@@ -1,3 +1,5 @@
+#+PROPERTY: header-args :tangle yes
+
 * How we prepared the artifact
 ** BenchExec
    #+BEGIN_SRC emacs-lisp :results output silent
@@ -352,5 +354,5 @@
    #+END_SRC
 
    #+BEGIN_SRC sh :results output silent
-   install.packages(c("tidyverse", "xtable"))
+   install.packages(c("tidyverse", "xtable"), dependencies=TRUE)
    #+END_SRC
