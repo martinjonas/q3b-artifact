@@ -8,7 +8,7 @@ echo ae | sudo -S adduser cav benchexec
 mkdir solvers
 cd solvers
 
-cd /home/cav/artifact/solvers
+cd /home/cav/q3b-artifact/solvers
 mkdir Z3
 cd Z3
 wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.4/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04.zip
@@ -22,7 +22,7 @@ echo ae | sudo -S cp z3/include/* /usr/include/
 
 cd ..
 
-cd /home/cav/artifact/solvers
+cd /home/cav/q3b-artifact/solvers
 mkdir Boolector
 cd Boolector
 wget https://github.com/Boolector/boolector/archive/3.0.0.zip
@@ -48,7 +48,7 @@ bin/boolector --version
 
 cd ../../..
 
-cd /home/cav/artifact/solvers
+cd /home/cav/q3b-artifact/solvers
 mkdir CVC4
 cd CVC4
 wget https://cvc4.cs.stanford.edu/downloads/builds/x86_64-linux-opt/cvc4-1.6-x86_64-linux-opt
@@ -59,7 +59,7 @@ chmod a+x cvc4
 
 cd ..
 
-cd /home/cav/artifact/solvers
+cd /home/cav/q3b-artifact/solvers
 mkdir Q3B
 cd Q3B
 git clone --recurse-submodules https://github.com/martinjonas/Q3B.git
@@ -87,7 +87,7 @@ echo ae | sudo -S apt-get install -y openjdk-9-jre-headless
 git config --global user.email "cav@cav"
 git config --global user.name "cav"
 
-cd /home/cav/artifact/solvers/Q3B/Q3B
+cd /home/cav/q3b-artifact/solvers/Q3B/Q3B
 mkdir build
 cd build
 cmake .. -DANTLR_EXECUTABLE=/usr/share/java/antlr-4.7.2-complete.jar 2>&1
@@ -98,7 +98,7 @@ make -j4
 
 make test
 
-cd /home/cav/artifact
+cd /home/cav/q3b-artifact
 mkdir benchmarks
 cd benchmarks
 wget http://smt-lib.loria.fr/zip/BV.zip
