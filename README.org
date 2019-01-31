@@ -1,0 +1,71 @@
+* Artifact for Q3B: An Efficient BDD-based SMT Solver for Quantified Bit-Vectors
+
+** Content
+   This virtual machine contains all the necessary packages and files
+   for reproducing results from the paper. Namely, it has installed
+   - BenchExec for running the experiments,
+   - R for summarizing the results,
+   - TeX Live for generating the tables from the results,
+   - all the packages that were necessary to build the solvers (antlr, java, cmake).
+
+   The directory =solvers= contains binaries and source codes for all
+   four evaluated solvers Boolector, CVC4, Q3B, and Z3. The binaries
+   for CVC4 and Z3 were downloaded from the official repositories,
+   solvers Boolector and Q3B were build from the source codes.
+
+   The directory =benchmarks= contains all quantified bit-vector
+   benchmarks from SMT-LIB.
+
+   If the reader is interested in details, the file =PREPARATION.org=
+   contains all the scripts that were used to produce this virtual
+   machine from the clean Ubuntu 16.04 image. The image you see is the
+   result of cloning the repository
+   https://github.com/martinjonas/q3b-artifact.git and running the
+   script =./PREPARATION.sh=, which is generated from the mentioned
+   file =PREPARATION.org=.
+
+** Running experiments
+
+   To run the experiments with the timeout 20 minutes of CPU time, as
+   in the paper, run the scripts =./runExperiments.sh=. After it
+   finishes, you should see the folder =experiments/results= with CSV
+   files for Boolector, CVC4, Q3B, and Z3. If you run the script
+   =./runExperiments.sh= again, the folder gets deleted and *all* the
+   experiments are executed again.
+
+   Beware that the script =./runExperiments.sh= with the default
+   timeout needs about a *week* of CPU time to finish. The script
+   tries to use all the available CPU cores and will run more
+   experiments in parallel, if you have more available cores and RAM.
+   Therefore, adding cores to the virtual machine will speed up the
+   computation significantly: in our experimental setup, all the
+   experiments took about five days on a 6-core machine and 24 GiB of
+   RAM.
+
+   If you want to run a simpler version of the experiments, the script
+   =./runExperiments.sh= takes an optional parameter for custom
+   timeout. Therefore =./runExperiments.sh 5= will run the experiments
+   with timeout of 5 seconds. This took about two hours on our machine.
+
+** Processing the results
+
+   After you have all the experimental data, regardless of the
+   timeout, you can run the script =./processResults.sh= to process
+   the resulting data. The script should output several tables with
+   results, generate LaTeX files with those tables in
+   =results/tables=, and generate PDFs with plots in
+   =results/figures=. However, most importantly, after the script
+   finishes, you should see a file =results/results.pdf=, which
+   contains nicely type-set tables and plots. Table 1 and 4 in this
+   file correspond to the tables from the paper and should have
+   exactly the same formatting. Actually, the tables in the paper are
+   result of merely including LaTeX files =results/tables/solved.tex=
+   and =results/tables/cross.tex=, which are also included in the PDF
+   produced by the script.
+
+   Again, if the reader is interested in details of processing the
+   details. The scripts used in =./processResults.sh= are generated
+   from the literate-programming file =results/PROCESSRESULTS.org=,
+   which contains all the used commands, describes their purpose and
+   contains all the results of these commands that were produced
+   during our experiments.
