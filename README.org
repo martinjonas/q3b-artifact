@@ -11,7 +11,7 @@
    The directory =solvers= contains binaries and source codes for all
    four evaluated solvers Boolector, CVC4, Q3B, and Z3. The binaries
    for CVC4 and Z3 were downloaded from the official repositories,
-   solvers Boolector and Q3B were build from the source codes.
+   solvers Boolector and Q3B were built from the source codes.
 
    The directory =benchmarks= contains all quantified bit-vector
    benchmarks from SMT-LIB.
