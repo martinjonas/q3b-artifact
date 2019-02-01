@@ -27,6 +27,9 @@
 
 ** Running experiments
 
+   For running the experiments, you need to set-up the virtual machine
+   with at least 3 physical or virtual processors.
+
    To run the experiments with the timeout 20 minutes of CPU time, as
    in the paper, run the scripts =./runExperiments.sh=. After it
    finishes, you should see the folder =experiments/results= with CSV
