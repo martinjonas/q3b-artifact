@@ -28,7 +28,8 @@
 ** Running experiments
 
    For running the experiments, you need to set-up the virtual machine
-   with at least 3 physical or virtual processors.
+   with at least 3 physical or virtual processors. The machine should
+   also have at least 8 GiB of RAM.
 
    To run the experiments with the timeout 20 minutes of CPU time, as
    in the paper, run the scripts =./runExperiments.sh=. After it
@@ -50,6 +51,11 @@
    =./runExperiments.sh= takes an optional parameter for custom
    timeout. Therefore =./runExperiments.sh 5= will run the experiments
    with timeout of 5 seconds. This took about two hours on our machine.
+
+   If you want to run the experiments with smaller amount or RAM, you
+   can pass the desired amount to =./runExperiments.sh= as the third
+   argument. For example =./runExperiments.sh 5 2= runs the
+   experiments with CPU timeout of 5 seconds and with 2 GiB of RAM.
 
 ** Processing the results
 
