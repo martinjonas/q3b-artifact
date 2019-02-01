@@ -8,14 +8,14 @@ REQUIRED_PATHS = []
 
 class Tool(benchexec.tools.template.BaseTool):
     def executable(self):
-        return util.find_executable('/home/cav/artifact/solvers/CVC4/cvc4')
+        return util.find_executable('/home/cav/q3b-artifact/solvers/CVC4/cvc4')
 
     def version(self, executable):
         return self._version_from_tool(executable)
 
     def name(self):
         return 'cvc4'
-    
+
     def cmdline(self, executable, options, tasks, propertyfile, rlimits):
         assert len(tasks) == 1
 

@@ -10,23 +10,23 @@
    </rundefinition>
 
   <tasks name="PreinerCAV">
-    <include>/home/cav/artifact/benchmarks/BV/2018-Preiner-cav18/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2018-Preiner-cav18/*.smt2</include>
   </tasks>
 
   <tasks name="Wintersteiger">
-    <include>/home/cav/artifact/benchmarks/BV/wintersteiger/fmsd13/fixpoint/*.smt2</include>
-    <include>/home/cav/artifact/benchmarks/BV/wintersteiger/fmsd13/ranking/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/wintersteiger/fmsd13/fixpoint/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/wintersteiger/fmsd13/ranking/*.smt2</include>
   </tasks>
 
   <tasks name="LNIRA">
-    <include>/home/cav/artifact/benchmarks/BV/2017-Preiner-keymaera/*.smt2</include>
-    <include>/home/cav/artifact/benchmarks/BV/2017-Preiner-psyco/*.smt2</include>
-    <include>/home/cav/artifact/benchmarks/BV/2017-Preiner-scholl-smt08/*/*.smt2</include>
-    <include>/home/cav/artifact/benchmarks/BV/2017-Preiner-tptp/*.smt2</include>
-    <include>/home/cav/artifact/benchmarks/BV/2017-Preiner-UltimateAutomizer/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2017-Preiner-keymaera/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2017-Preiner-psyco/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2017-Preiner-scholl-smt08/*/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2017-Preiner-tptp/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/2017-Preiner-UltimateAutomizer/*.smt2</include>
   </tasks>
 
   <tasks name="Heizmann">
-    <include>/home/cav/artifact/benchmarks/BV/20170501-Heizmann-UltimateAutomizer/*.smt2</include>
+    <include>/home/cav/q3b-artifact/benchmarks/BV/20170501-Heizmann-UltimateAutomizer/*.smt2</include>
   </tasks>
 </benchmark>
