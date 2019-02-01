@@ -8,14 +8,14 @@ REQUIRED_PATHS = []
 
 class Tool(benchexec.tools.template.BaseTool):
     def executable(self):
-        return util.find_executable('/home/cav/artifact/solvers/Boolector/boolector-3.0.0/build/bin/boolector')
+        return util.find_executable('/home/cav/q3b-artifact/solvers/Boolector/boolector-3.0.0/build/bin/boolector')
 
     def version(self, executable):
         return self._version_from_tool(executable)
 
     def name(self):
         return 'boolector'
-    
+
     def cmdline(self, executable, options, tasks, propertyfile, rlimits):
         assert len(tasks) == 1
 
