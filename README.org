@@ -22,8 +22,8 @@
    machine from the clean Ubuntu 16.04 image. The image you see is the
    result of cloning the repository
    https://github.com/martinjonas/q3b-artifact.git and running the
-   script =./PREPARATION.sh=, which is generated from the mentioned
-   file =PREPARATION.org=.
+   script =./PREPARATION.sh= and then =sudo Rscript PREPARATION.R=,
+   which are generated from the mentioned file =PREPARATION.org=.
 
 ** Running experiments
 
