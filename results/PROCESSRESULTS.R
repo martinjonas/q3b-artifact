@@ -73,10 +73,10 @@ maxTable <- transmute(table,
 )
 
     xt <- xtable(maxTable, type = "latex", label="tbl:solved",
-      caption = "For each solver and benchmark family, the table shows the number of benchmarks solved from this benchmark family by the solver.")
+      caption = "For each solver and benchmark family, the table shows the number of benchmarks from the given family solved by the given solver. The column \\emph{Total} shows the total number of benchmarks in the given family.")
     align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
     print(xt,
-          file = "tables/solved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(table)-1, nrow(table)),
+          file = "tables/solved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(table)-1, nrow(table)), table.placement="tbp",
           sanitize.text.function=function(x) x)
 
 satTable <- res %>%
@@ -112,7 +112,7 @@ maxSatTable <- transmute(satTable,
       caption = "For each solver and benchmark family, the table shows the number of \\emph{satisfiable} benchmarks solved from this benchmark family by the solver.")
     align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
     print(xt,
-          file = "tables/satSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(satTable)-1, nrow(satTable)),
+          file = "tables/satSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(satTable)-1, nrow(satTable)),table.placement="tbp",
           sanitize.text.function=function(x) x)
 
 unsatTable <- res %>%
@@ -148,7 +148,7 @@ maxUnsatTable <- transmute(unsatTable,
       caption = "For each solver and benchmark family, the table shows the number of \\emph{unsatisfiable} benchmarks solved from this benchmark family by the solver.")
     align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r', 'r')
     print(xt,
-          file = "tables/unsatSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(unsatTable)-1, nrow(unsatTable)),
+          file = "tables/unsatSolved.tex", include.rownames=FALSE, booktabs=TRUE, hline.after = c(-1, 0, nrow(unsatTable)-1, nrow(unsatTable)), table.placement="tbp",
           sanitize.text.function=function(x) x)
 
 z3Unique <- res %>%
@@ -180,14 +180,26 @@ q3bUnique <- res %>%
   rename(Q3B = count)
 
 uniqSolved <- Reduce(function(...) merge(..., all=TRUE), list(boolectorUnique, cvc4Unique, q3bUnique, z3Unique))
+uniqSolved[is.na(uniqSolved)] <- 0
+uniqSolved
 
 xt <- xtable(uniqSolved, type = "latex", label="tbl:uniquelySolved",
   caption = "For each solver and benchmark family, the table shows the number of benchmarks solved only by the given solver.")
 align(xt) <- c('l', 'l', 'r', 'r', 'r', 'r')
 print(xt,
-      file = "tables/uniqueSolved.tex", include.rownames=FALSE, booktabs=TRUE,
-      sanitize.text.function=function(x) x,
-      NA.string="0")
+    file = "tables/uniqueSolved.tex", include.rownames=FALSE, booktabs=TRUE, table.placement="tbp",
+    sanitize.text.function=function(x) x,
+    NA.string="0")
+
+uniqSolvedSum <- uniqSolved %>%
+                 summarize(Boolector = as.integer(sum(Boolector)),
+                         CVC4 = as.integer(sum(CVC4)),
+                         Q3B = as.integer(sum(Q3B)),
+                         Z3 = as.integer(sum(Z3)))
+
+uniqSolvedSum <- as.data.frame(t(uniqSolvedSum))
+colnames(uniqSolvedSum) <- c("Uniquely solved")
+uniqSolvedSum
 
 res %>%
   filter(!z3.solved & !boolector.solved & !cvc4.solved & !q3b.solved) %>%
@@ -228,15 +240,20 @@ crossTable <- function()
   results.table <- matrix(results, ncol=4,byrow=TRUE)
   colnames(results.table) <- labels
   rownames(results.table) <- labels
-  out <- as.table(results.table)
+  out <- as.data.frame(results.table)
   return(out)
 }
 
 table <- crossTable()
+table <- merge(table, uniqSolvedSum, by='row.names')
+colnames(table) <- c("", "Boolector", "CVC4", "Q3B", "Z3", "Uniquely solved")
+table
 
-print(xtable(table, type = "latex", label="tbl:cross",
-             caption = "The table shows cross-comparison of solved benchmarks by all pairs of the solvers. Each cell shows the number of benchmarks that were solved by the solver in the corresponding row, but not by the solver by the corresponding column."),
-      file = "tables/cross.tex", include.rownames=TRUE, booktabs=TRUE)
+xt <- xtable(table, type = "latex", label="tbl:cross",
+             caption = "The table shows cross-comparison of solved benchmarks by all pairs of the solvers. Each cell shows the number of benchmarks that were solved by the solver in the corresponding row, but not by the solver by the corresponding column. The column \\emph{Uniquely solved} shows the number of benchmarks that were solved only by the given solver.")
+align(xt) <- "llrrrr|r"
+print(xt,
+      file = "tables/cross.tex", include.rownames=FALSE, booktabs=TRUE, table.placement="tbp")
 
 quantilePlot <- function(onlyTrivial = FALSE)
 {
