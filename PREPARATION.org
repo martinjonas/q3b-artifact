@@ -343,11 +343,15 @@
    rm BV.zip
    #+END_SRC
 
-** R
+** R and Tex Live
+   Finally, we install R and Tex Live, which will be used to process the experimental results.
+
    #+BEGIN_SRC sh :results output silent
    echo ae | sudo -S apt-get install -y r-base texlive
    echo ae | sudo -S apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev
    #+END_SRC
+
+   And we also install several *R* packages, which will come in handy during the processing of the results.
 
    #+BEGIN_SRC R :results output silent
    install.packages(c("tidyverse", "xtable"), dependencies=TRUE, repos='http://cran.us.r-project.org')
