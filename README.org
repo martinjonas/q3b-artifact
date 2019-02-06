@@ -29,7 +29,9 @@
 
    For running the experiments, you need to set-up the virtual machine
    with at least 3 physical or virtual processors. The machine should
-   also have at least 8 GiB of RAM.
+   also have at least 8 GiB of RAM. The experiments can be also
+   executed with less RAM (see later), but this will probably fail to
+   produce exactly the same results as in the paper.
 
    To run the experiments with the timeout 20 minutes of CPU time, as
    in the paper, run the scripts =./runExperiments.sh=. After it
@@ -95,5 +97,29 @@
 ** Q3B
 
 *** Usage
+    The binary of Q3B is located at =solvers/Q3B/Q3B/build/q3b=.
+
+    To run Q3B with a input file =input.smt2=, run
+    =solvers/Q3B/Q3B/build/q3b input.smt2=. To get all the available
+    options, run =solvers/Q3B/Q3B/build/q3b --help=.
 
 *** Source code
+    The source code of Q3B is located at =solvers/Q3B/Q3B/build/q3b=.
+    This directory contains the following directories
+
+    - =app=, which contains =main.cpp=, which reads the input from the
+      user and runs the solver itself,
+    - =cmake=, which contains CMake modules,
+    - =lib=, which contains all the components described in the paper,
+    - =parser=, which contains grammar for ANTLR parser of SMT-LIB,
+    - =tests=, which contains regression and functional tests.
+
+    Q3B can be built from the source codes by creating a new directory
+    =build=, if it does not already exist, and then calling
+
+    #+BEGIN_SRC
+    cd build
+    cmake .. -DANTLR_EXECUTABLE=/usr/share/java/antlr-4.7.2-complete.jar 2>&1
+    make
+    make test
+    #+END_SRC
