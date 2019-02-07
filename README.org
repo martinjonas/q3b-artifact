@@ -22,8 +22,12 @@
    machine from the clean Ubuntu 16.04 image. The image you see is the
    result of cloning the repository
    https://github.com/martinjonas/q3b-artifact.git and running the
-   script =./PREPARATION.sh= and then =sudo Rscript PREPARATION.R=,
-   which are generated from the mentioned file =PREPARATION.org=.
+   script =./artifact/preparation/PREPARATION.sh= and then =sudo
+   Rscript artifact/preparation/PREPARATION.R=, which are generated
+   from the mentioned file =artifact/preparation/PREPARATION.org=.
+   This org-mode file contains also results of some of the commands we
+   have obtained during preparation of the artifact: for example
+   versions of the used tools and results of tests of Q3B.
 
 ** Running experiments
 
