@@ -146,10 +146,10 @@
       #+RESULTS:
       | result            | boolector | cvc4 |  q3b |   z3 |
       |-------------------+-----------+------+------+------|
-      | OUT OF MEMORY     |       nil |  nil |   12 |   14 |
-      | sat               |       610 |  556 |  621 |  563 |
-      | TIMEOUT (timeout) |       258 |  225 |  129 |  266 |
-      | unsat             |      4883 | 4970 | 4989 | 4908 |
+      | OUT OF MEMORY     |       nil |  nil |   11 |   14 |
+      | sat               |       611 |  556 |  621 |  563 |
+      | TIMEOUT (timeout) |       257 |  224 |  130 |  266 |
+      | unsat             |      4883 | 4971 | 4989 | 4908 |
 
 
 *** Solved formulas in benchmark families
@@ -177,7 +177,7 @@
     #+RESULTS:
     | family                              | total | boolector | cvc4 |  q3b |   z3 |
     |-------------------------------------+-------+-----------+------+------+------|
-    | 2017-Preiner-keymaera               |  4035 |      4021 | 3997 | 4009 | 4031 |
+    | 2017-Preiner-keymaera               |  4035 |      4022 | 3998 | 4009 | 4031 |
     | 2017-Preiner-psyco                  |   194 |       193 |  190 |  182 |  194 |
     | 2017-Preiner-scholl-smt08           |   374 |       312 |  248 |  319 |  272 |
     | 2017-Preiner-tptp                   |    73 |        69 |   73 |   73 |   73 |
@@ -185,7 +185,7 @@
     | 20170501-Heizmann-UltimateAutomizer |   131 |        30 |  128 |  124 |   32 |
     | 2018-Preiner-cav18                  |   600 |       553 |  565 |  565 |  553 |
     | wintersteiger                       |   191 |       163 |  174 |  185 |  163 |
-    | Total                               |  5751 |      5493 | 5526 | 5610 | 5471 |
+    | Total                               |  5751 |      5494 | 5527 | 5610 | 5471 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
     maxTable <- transmute(table,
@@ -232,14 +232,14 @@
     #+RESULTS:
     | family                              | total | boolector | cvc4 | q3b |  z3 |
     |-------------------------------------+-------+-----------+------+-----+-----|
-    | 2017-Preiner-keymaera               |   108 |       104 |   78 | 104 | 108 |
+    | 2017-Preiner-keymaera               |   108 |       105 |   78 | 104 | 108 |
     | 2017-Preiner-psyco                  |   132 |       131 |  129 | 123 | 132 |
     | 2017-Preiner-scholl-smt08           |   257 |       247 |  214 | 249 | 204 |
     | 2017-Preiner-tptp                   |    17 |        16 |   17 |  17 |  17 |
     | 2017-Preiner-UltimateAutomizer      |    16 |        16 |   14 |  16 |  16 |
     | 20170501-Heizmann-UltimateAutomizer |    21 |        19 |   19 |  20 |  15 |
     | wintersteiger                       |    93 |        77 |   85 |  92 |  71 |
-    | Total                               |   644 |       610 |  556 | 621 | 563 |
+    | Total                               |   644 |       611 |  556 | 621 | 563 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
     maxSatTable <- transmute(satTable,
@@ -285,7 +285,7 @@
     #+RESULTS:
     | family                              | total | boolector | cvc4 |  q3b |   z3 |
     |-------------------------------------+-------+-----------+------+------+------|
-    | 2017-Preiner-keymaera               |  3925 |      3917 | 3919 | 3905 | 3923 |
+    | 2017-Preiner-keymaera               |  3925 |      3917 | 3920 | 3905 | 3923 |
     | 2017-Preiner-psyco                  |    62 |        62 |   61 |   59 |   62 |
     | 2017-Preiner-scholl-smt08           |    76 |        65 |   34 |   70 |   68 |
     | 2017-Preiner-tptp                   |    56 |        53 |   56 |   56 |   56 |
@@ -293,7 +293,7 @@
     | 20170501-Heizmann-UltimateAutomizer |   110 |        11 |  109 |  104 |   17 |
     | 2018-Preiner-cav18                  |   590 |       553 |  565 |  565 |  553 |
     | wintersteiger                       |    94 |        86 |   89 |   93 |   92 |
-    | Total                               |  5050 |      4883 | 4970 | 4989 | 4908 |
+    | Total                               |  5050 |      4883 | 4971 | 4989 | 4908 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
     maxUnsatTable <- transmute(unsatTable,
@@ -521,8 +521,8 @@
       |-----------+-----------+------+-----+-----+-----------------|
       | Boolector |         0 |  123 |  69 |  78 |               8 |
       | CVC4      |       156 |    0 |  60 | 171 |               6 |
-      | Q3B       |       186 |  144 |   0 | 208 |              25 |
-      | Z3        |        56 |  116 |  69 |   0 |               6 |
+      | Q3B       |       185 |  143 |   0 | 208 |              25 |
+      | Z3        |        55 |  115 |  69 |   0 |               6 |
 
     #+BEGIN_SRC R :results none :colnames yes :session :exports both
       xt <- xtable(table, type = "latex", label="tbl:cross",
@@ -604,7 +604,7 @@
     #+END_SRC
 
     #+RESULTS:
-    : 3461
+    : 3468
 
     #+BEGIN_SRC R :results output graphics :file figures/all_trivial_quantile.svg :session :exports both :width 8 :height 4
     quantilePlot(TRUE)
