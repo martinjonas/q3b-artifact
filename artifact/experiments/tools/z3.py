@@ -8,7 +8,7 @@ REQUIRED_PATHS = [ ]
 
 class Tool(benchexec.tools.template.BaseTool):
     def executable(self):
-        return util.find_executable('/home/cav/q3b-artifact/solvers/Z3/z3/bin/z3')
+        return util.find_executable('/home/cav/q3b-artifact/artifact/solvers/Z3/z3/bin/z3')
 
     def version(self, executable):
         return self._version_from_tool(executable)
