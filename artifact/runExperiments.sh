@@ -13,7 +13,7 @@ fi
 CORES=`cat /proc/cpuinfo | grep -c 'core id'`
 RAM=`free -g | grep "Mem:" | awk '{print $2}'`
 
-getThreads() 
+getThreads()
 {
   TOOL_CORES=$1
   MAX_CORES=$(expr $CORES / $TOOL_CORES)
@@ -22,14 +22,14 @@ getThreads()
     echo $MAX_RAM
   else
     echo $MAX_CORES
-  fi	
+  fi
 }
 
 echo "The computer has $CORES cores and $RAM GiB of free RAM"
 
 cd experiments/
 rm -rf results
-export PYTHONPATH=/home/cav/artifact/experiments/:$PYTHONPATH
+export PYTHONPATH=/home/cav/q3b-artifact/artifact/experiments/:$PYTHONPATH
 
 echo "Running $(getThreads 2) parallel instances of Boolector"
 benchexec boolector.xml -N `getThreads 2` -T "$TIMEOUT"s -M "$MEMLIMIT"GB

@@ -1,0 +1,334 @@
+#+PROPERTY: header-args :tangle yes
+
+* How we prepared the artifact
+** BenchExec
+   #+BEGIN_SRC emacs-lisp :results output silent :tangle no
+   (require 'ob-sh)
+   #+END_SRC
+
+   First, we need to install BenchExec, which we use to run all the experiments.
+
+   #+BEGIN_SRC sh  :results output silent
+   wget https://github.com/sosy-lab/benchexec/releases/download/1.17/benchexec_1.17-1_all.deb 2>&1
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results output silent
+   echo ae | sudo -S apt-get install -y python3-tempita python3-yaml 2>&1
+   echo ae | sudo -S dpkg -i benchexec_*.deb 2>&1
+   #+END_SRC
+
+   #+BEGIN_SRC sh :results output silent
+   echo ae | sudo -S adduser cav benchexec
+   #+END_SRC
+** Solvers
+   Now, we need to download and install all the solvers. First, we create a new directory:
+
+   #+BEGIN_SRC sh :session solvers :results none
+   mkdir solvers
+   cd solvers
+   #+END_SRC
+
+*** Z3
+
+    Create a new directory for Z3, download and unpack the official build for Ubuntu.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    cd /home/cav/q3b-artifact/artifact/solvers
+    mkdir Z3
+    cd Z3
+    wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.4/z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04.zip
+    unzip z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04.zip
+    mv z3-4.8.4.d6df51951f4c-x64-ubuntu-16.04 z3
+    #+END_SRC
+
+    Test the Z3 binary:
+
+    #+BEGIN_SRC sh :session solvers :results output verbatim
+    z3/bin/z3 --version
+    #+END_SRC
+
+    #+RESULTS:
+    : Z3 version 4.8.4 - 64 bit - build hashcode d6df51951f4c
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    echo ae | sudo -S cp z3/bin/libz3.{a,so} /usr/lib/
+    echo ae | sudo -S cp z3/include/* /usr/include/
+    #+END_SRC
+
+    #+BEGIN_SRC sh :session solvers :results none
+    cd ..
+    #+END_SRC
+
+*** Boolector
+
+    Create a new directory for Boolector, download and unpack the official source codes.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    cd /home/cav/q3b-artifact/artifact/solvers
+    mkdir Boolector
+    cd Boolector
+    wget https://github.com/Boolector/boolector/archive/3.0.0.zip
+    unzip 3.0.0.zip
+    cd ..
+    #+END_SRC
+
+    We need to install cmake to build the solver.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    wget https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-Linux-x86_64.tar.gz
+    tar -xf cmake-3.13.3-Linux-x86_64.tar.gz
+    echo ae | sudo -S cp -r cmake-3.13.3-Linux-x86_64/bin /usr/
+    echo ae | sudo -S cp -r cmake-3.13.3-Linux-x86_64/share /usr/
+    echo ae | sudo -S cp -r cmake-3.13.3-Linux-x86_64/doc /usr/share/
+    echo ae | sudo -S cp -r cmake-3.13.3-Linux-x86_64/man /usr/share/
+    echo ae | sudo -S rm -r cmake-3.13.3-Linux-x86_64
+    echo ae | sudo -S rm cmake-3.13.3-Linux-x86_64.tar.gz
+    echo ae | sudo -S apt-get install -y uuid-dev
+    #+END_SRC
+
+    Build the source codes.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    cd Boolector/boolector-3.0.0
+    ./contrib/setup-lingeling.sh
+    ./contrib/setup-btor2tools.sh
+    ./configure.sh && cd build && make
+    #+END_SRC
+
+    Test the Boolector binary:
+
+    #+BEGIN_SRC sh :session solvers :results output
+    bin/boolector --version
+    #+END_SRC
+
+    #+RESULTS:
+    : 3.0.0
+
+    #+BEGIN_SRC sh :session solvers :results none
+    cd ../../..
+    #+END_SRC
+
+*** CVC4
+
+    Create a new directory for CVC4, download the official build for Linux. Also, make the binary executable.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    cd /home/cav/q3b-artifact/artifact/solvers
+    mkdir CVC4
+    cd CVC4
+    wget https://cvc4.cs.stanford.edu/downloads/builds/x86_64-linux-opt/cvc4-1.6-x86_64-linux-opt
+    mv cvc4-1.6-x86_64-linux-opt cvc4
+    chmod a+x cvc4
+    #+END_SRC
+
+    Test the CVC4 binary:
+
+    #+BEGIN_SRC sh :session solvers :results output verbatim
+    ./cvc4 --version
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    This is CVC4 version 1.6
+    compiled with GCC version 5.4.0 20160609
+    on Jun 25 2018 14:35:28
+
+    Copyright (c) 2009-2018 by the authors and their institutional
+    affiliations listed at http://cvc4.cs.stanford.edu/authors
+
+    CVC4 is open-source and is covered by the BSD license (modified).
+
+    THIS SOFTWARE IS PROVIDED AS-IS, WITHOUT ANY WARRANTIES.
+    USE AT YOUR OWN RISK.
+
+    CVC4 incorporates code from ANTLR3 (http://www.antlr.org).
+    See licenses/antlr3-LICENSE for copyright and licensing information.
+
+    This version of CVC4 is linked against the following third party
+    libraries covered by the LGPLv3 license.
+    See licenses/lgpl-3.0.txt for more information.
+
+      GMP - Gnu Multi Precision Arithmetic Library
+      See http://gmplib.org for copyright information.
+
+    See the file COPYING (distributed with the source code, and with
+    all binaries) for the full CVC4 copyright, licensing, and (lack of)
+    warranty information.
+    #+end_example
+
+    #+BEGIN_SRC sh :session solvers :results none
+    cd ..
+    #+END_SRC
+
+*** Q3B
+
+    Create a new directory for Q3B, download the source codes from GitHub.
+
+    #+BEGIN_SRC sh :session solvers :results none
+    cd /home/cav/q3b-artifact/artifact/solvers
+    mkdir Q3B
+    cd Q3B
+    git clone --recurse-submodules https://github.com/martinjonas/Q3B.git
+    cd Q3B
+    git checkout dev
+    git submodule update --init --recursive
+    cd ..
+    #+END_SRC
+
+    We need to install autotools and automake to build CUDD. Also newer GCC to make Q3B.
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    echo ae | sudo -S add-apt-repository ppa:ubuntu-toolchain-r/test
+    echo ae | sudo -S apt update
+    echo ae | sudo -S apt-get install -y autotools-dev automake g++-7 2>&1
+    echo ae | sudo -S update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 \
+                         --slave /usr/bin/g++ g++ /usr/bin/g++-7
+    echo ae | sudo -S update-alternatives --config gcc
+    #+END_SRC
+
+    We also need to install CUDD:
+    #+BEGIN_SRC sh :session solvers :results output silent
+    git clone https://github.com/martinjonas/cudd.git
+    cd cudd
+    ./configure --enable-silent-rules --enable-obj --enable-shared && make -j4
+    echo ae | sudo make install
+    cd ..
+    #+END_SRC
+
+    Q3B also needs ANTLR, which, in turn needs Java:
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    echo ae | sudo -S wget https://www.antlr.org/download/antlr-4.7.2-complete.jar -P /usr/share/java
+    echo ae | sudo -S apt-get install -y openjdk-9-jre-headless
+    #+END_SRC
+
+    Config git for ANTLR:
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    git config --global user.email "cav@cav"
+    git config --global user.name "cav"
+    #+END_SRC
+
+    Now, create a build directory for Q3B and generate makefile with cmake.
+
+    #+BEGIN_SRC sh :session solvers :results output verbatim
+    cd /home/cav/q3b-artifact/artifact/solvers/Q3B/Q3B
+    mkdir build
+    cd build
+    cmake .. -DANTLR_EXECUTABLE=/usr/share/java/antlr-4.7.2-complete.jar 2>&1
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    cav@cav19-artifact:~/artifact/solvers/Q3B/Q3B$ cav@cav19-artifact:~/artifact/solvers/Q3B/Q3B/build$ -- The C compiler identification is GNU 7.4.0
+    -- The CXX compiler identification is GNU 7.4.0
+    -- Check for working C compiler: /usr/bin/cc
+    -- Check for working C compiler: /usr/bin/cc -- works
+    -- Detecting C compiler ABI info
+    -- Detecting C compiler ABI info - done
+    -- Detecting C compile features
+    -- Detecting C compile features - done
+    -- Check for working CXX compiler: /usr/bin/c++
+    -- Check for working CXX compiler: /usr/bin/c++ -- works
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+    -- No Build type specified; using RELEASE.
+    -- Found OpenMP_C: -fopenmp (found version "4.5")
+    -- Found OpenMP_CXX: -fopenmp (found version "4.5")
+    -- Found OpenMP: TRUE (found version "4.5")
+    -- Looking for pthread.h
+    -- Looking for pthread.h - found
+    -- Looking for pthread_create
+    -- Looking for pthread_create - found
+    -- Found Threads: TRUE
+    -- Found ANTLR: /usr/share/java/antlr-4.7.2-complete.jar (found version "4.7.2")
+    -- Configuring done
+    -- Generating done
+    -- Build files have been written to: /home/cav/q3b-artifact/artifact/solvers/Q3B/Q3B/build
+    #+end_example
+
+    And, finally, build Q3B:
+
+    #+BEGIN_SRC sh :session solvers :results output silent
+    make -j4
+    #+END_SRC
+
+    Check the resulting binary:
+    #+BEGIN_SRC sh :session solvers :results output verbatim
+    ./q3b --version
+    #+END_SRC
+
+    #+RESULTS:
+    : Q3B version 0.9 dev
+
+    And run tests.
+
+    #+BEGIN_SRC sh :session solvers :results output verbatim
+    make test
+    #+END_SRC
+
+    #+RESULTS:
+    #+begin_example
+    Running tests...
+    Test project /home/cav/q3b-artifact/artifact/solvers/Q3B/Q3B/build
+	  Start  1: RegressionNoApprox
+    1: RegressionNoApprox ...................   Passed    0.79 sec
+	  Start  2: RegressionVariableApprox
+    2: RegressionVariableApprox .............   Passed    1.63 sec
+	  Start  3: RegressionBothLimitApprox
+    3: RegressionBothLimitApprox ............   Passed    1.54 sec
+	  Start  4: RegressionBothLimitApprox-TCI
+    4: RegressionBothLimitApprox-TCI ........   Passed    0.00 sec
+	  Start  5: RegressionOperationLimitApprox-ITE
+    5: RegressionOperationLimitApprox-ITE ...   Passed    0.00 sec
+	  Start  6: RegressionSMTCOMP2018
+    6: RegressionSMTCOMP2018 ................   Passed    0.31 sec
+	  Start  7: RegressionGoalUnconstrained
+    7: RegressionGoalUnconstrained ..........   Passed    0.03 sec
+	  Start  8: UnconstrainedBinaryTests
+    8: UnconstrainedBinaryTests .............   Passed    0.12 sec
+	  Start  9: UnconstrainedGoalUnconstrained
+    9: UnconstrainedGoalUnconstrained .......   Passed    0.21 sec
+	  Start 10: BinaryHelp
+    10: BinaryHelp ...........................   Passed    0.00 sec
+	  Start 11: BinaryVersion
+    11: BinaryVersion ........................   Passed    0.00 sec
+	  Start 12: Binary1
+    12: Binary1 ..............................   Passed    0.01 sec
+	  Start 13: Binary2
+    13: Binary2 ..............................   Passed    0.17 sec
+	  Start 14: Binary2Verbose
+    14: Binary2Verbose .......................   Passed    0.17 sec
+    tests passed, 0 tests failed out of 14
+
+    Total Test time (real) =   5.00 sec
+#+end_example
+
+** Benchmarks
+   We also need to download and unpack all quantified bit-vector
+   benchmarks from the SMT-LIB repository.
+
+   #+BEGIN_SRC sh :results output silent
+   cd /home/cav/q3b-artifact/artifact
+   mkdir benchmarks
+   cd benchmarks
+   wget http://smt-lib.loria.fr/zip/BV.zip
+   unzip BV.zip
+   rm BV.zip
+   #+END_SRC
+
+** R and Tex Live
+   Finally, we install R and Tex Live, which will be used to process the experimental results.
+
+   #+BEGIN_SRC sh :results output silent
+   echo ae | sudo -S apt-get install -y r-base texlive
+   echo ae | sudo -S apt-get install -y libssl-dev libxml2-dev libcurl4-openssl-dev
+   #+END_SRC
+
+   And we also install several *R* packages, which will come in handy during the processing of the results.
+
+   #+BEGIN_SRC R :results output silent
+   install.packages(c("tidyverse", "xtable"), dependencies=TRUE, repos='http://cran.us.r-project.org')
+   #+END_SRC

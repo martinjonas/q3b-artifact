@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE benchmark PUBLIC "+//IDN sosy-lab.org//DTD BenchExec benchmark 1.4//EN" "http://www.sosy-lab.org/benchexec/benchmark-1.4.dtd">
+<benchmark tool="tools.boolector"
+           timelimit="20 min"
+           hardtimelimit="20 min"
+           memlimit="8 GB"
+           cpuCores="2">
+
+   <rundefinition name="boolector">
+   </rundefinition>
+
+  <tasks name="PreinerCAV">
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2018-Preiner-cav18/*.smt2</include>
+  </tasks>
+
+  <tasks name="Wintersteiger">
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/wintersteiger/fmsd13/fixpoint/*.smt2</include>
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/wintersteiger/fmsd13/ranking/*.smt2</include>
+  </tasks>
+
+  <tasks name="LNIRA">
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2017-Preiner-keymaera/*.smt2</include>
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2017-Preiner-psyco/*.smt2</include>
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2017-Preiner-scholl-smt08/*/*.smt2</include>
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2017-Preiner-tptp/*.smt2</include>
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/2017-Preiner-UltimateAutomizer/*.smt2</include>
+  </tasks>
+
+  <tasks name="Heizmann">
+    <include>/home/cav/q3b-artifact/artifact/benchmarks/BV/20170501-Heizmann-UltimateAutomizer/*.smt2</include>
+  </tasks>
+</benchmark>
