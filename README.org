@@ -21,13 +21,14 @@
    contains all the scripts that were used to produce this virtual
    machine from the clean Ubuntu 16.04 image. The image you see is the
    result of cloning the repository
-   https://github.com/martinjonas/q3b-artifact.git and running the
-   script =./artifact/preparation/PREPARATION.sh= and then =sudo
-   Rscript artifact/preparation/PREPARATION.R=, which are generated
-   from the mentioned file =artifact/preparation/PREPARATION.org=.
-   This org-mode file contains also results of some of the commands we
-   have obtained during preparation of the artifact: for example
-   versions of the used tools and results of tests of Q3B.
+   https://github.com/martinjonas/q3b-artifact.git and running =bash
+   /preparation/PREPARATION.sh= from the directory =artifact= and then
+   =sudo Rscript preparation/PREPARATION.R=, which are
+   generated from the mentioned file
+   =artifact/preparation/PREPARATION.org=. This org-mode file contains
+   also results of some of the commands we have obtained during
+   preparation of the artifact: for example versions of the used tools
+   and results of tests of Q3B.
 
 ** Running experiments
 
