@@ -15,6 +15,7 @@
    #+BEGIN_SRC sh :results output silent
    echo ae | sudo -S apt-get install -y python3-tempita python3-yaml 2>&1
    echo ae | sudo -S dpkg -i benchexec_*.deb 2>&1
+   rm benchexec_*.deb
    #+END_SRC
 
    #+BEGIN_SRC sh :results output silent
