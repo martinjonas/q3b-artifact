@@ -221,7 +221,8 @@
 
     #+RESULTS:
     #+begin_example
-    cav@cav19-artifact:~/artifact/solvers/Q3B/Q3B$ cav@cav19-artifact:~/artifact/solvers/Q3B/Q3B/build$ -- The C compiler identification is GNU 7.4.0
+
+    cav@cav19-artifact:~/q3b-artifact/artifact/solvers/Q3B/Q3B$ cav@cav19-artifact:~/q3b-artifact/artifact/solvers/Q3B/Q3B/build$ -- The C compiler identification is GNU 7.4.0
     -- The CXX compiler identification is GNU 7.4.0
     -- Check for working C compiler: /usr/bin/cc
     -- Check for working C compiler: /usr/bin/cc -- works
@@ -236,15 +237,15 @@
     -- Detecting CXX compile features
     -- Detecting CXX compile features - done
     -- No Build type specified; using RELEASE.
-    -- Found OpenMP_C: -fopenmp (found version "4.5")
-    -- Found OpenMP_CXX: -fopenmp (found version "4.5")
-    -- Found OpenMP: TRUE (found version "4.5")
+    -- Found OpenMP_C: -fopenmp (found version "4.5") 
+    -- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+    -- Found OpenMP: TRUE (found version "4.5")  
     -- Looking for pthread.h
     -- Looking for pthread.h - found
     -- Looking for pthread_create
     -- Looking for pthread_create - found
-    -- Found Threads: TRUE
-    -- Found ANTLR: /usr/share/java/antlr-4.7.2-complete.jar (found version "4.7.2")
+    -- Found Threads: TRUE  
+    -- Found ANTLR: /usr/share/java/antlr-4.7.2-complete.jar (found version "4.7.2") 
     -- Configuring done
     -- Generating done
     -- Build files have been written to: /home/cav/q3b-artifact/artifact/solvers/Q3B/Q3B/build
@@ -262,7 +263,7 @@
     #+END_SRC
 
     #+RESULTS:
-    : Q3B version 0.9 dev
+    : Q3B version 1.0
 
     And run tests.
 
@@ -275,11 +276,11 @@
     Running tests...
     Test project /home/cav/q3b-artifact/artifact/solvers/Q3B/Q3B/build
 	  Start  1: RegressionNoApprox
-    1: RegressionNoApprox ...................   Passed    0.79 sec
+    1: RegressionNoApprox ...................   Passed    0.83 sec
 	  Start  2: RegressionVariableApprox
-    2: RegressionVariableApprox .............   Passed    1.63 sec
+    2: RegressionVariableApprox .............   Passed    1.64 sec
 	  Start  3: RegressionBothLimitApprox
-    3: RegressionBothLimitApprox ............   Passed    1.54 sec
+    3: RegressionBothLimitApprox ............   Passed    1.58 sec
 	  Start  4: RegressionBothLimitApprox-TCI
     4: RegressionBothLimitApprox-TCI ........   Passed    0.00 sec
 	  Start  5: RegressionOperationLimitApprox-ITE
@@ -288,24 +289,30 @@
     6: RegressionSMTCOMP2018 ................   Passed    0.31 sec
 	  Start  7: RegressionGoalUnconstrained
     7: RegressionGoalUnconstrained ..........   Passed    0.03 sec
-	  Start  8: UnconstrainedBinaryTests
-    8: UnconstrainedBinaryTests .............   Passed    0.12 sec
-	  Start  9: UnconstrainedGoalUnconstrained
-    9: UnconstrainedGoalUnconstrained .......   Passed    0.21 sec
-	  Start 10: BinaryHelp
-    10: BinaryHelp ...........................   Passed    0.00 sec
-	  Start 11: BinaryVersion
-    11: BinaryVersion ........................   Passed    0.00 sec
-	  Start 12: Binary1
-    12: Binary1 ..............................   Passed    0.01 sec
-	  Start 13: Binary2
-    13: Binary2 ..............................   Passed    0.17 sec
-	  Start 14: Binary2Verbose
-    14: Binary2Verbose .......................   Passed    0.17 sec
-    tests passed, 0 tests failed out of 14
+	  Start  8: RegressionParallel
+    8: RegressionParallel ...................   Passed    0.14 sec
+	  Start  9: UnconstrainedBinaryTests
+    9: UnconstrainedBinaryTests .............   Passed    0.12 sec
+	  Start 10: UnconstrainedGoalUnconstrained
+    10: UnconstrainedGoalUnconstrained .......   Passed    0.21 sec
+	  Start 11: SMTLIB
+    11: SMTLIB ...............................   Passed    0.02 sec
+	  Start 12: Models
+    12: Models ...............................   Passed    0.02 sec
+	  Start 13: BinaryHelp
+    13: BinaryHelp ...........................   Passed    0.00 sec
+	  Start 14: BinaryVersion
+    14: BinaryVersion ........................   Passed    0.00 sec
+	  Start 15: Binary1
+    15: Binary1 ..............................   Passed    0.01 sec
+	  Start 16: Binary2
+    16: Binary2 ..............................   Passed    0.10 sec
+	  Start 17: Binary2Verbose
+    17: Binary2Verbose .......................   Passed    0.12 sec
+    tests passed, 0 tests failed out of 17
 
-    Total Test time (real) =   5.00 sec
-#+end_example
+    Total Test time (real) =   5.18 sec
+    #+end_example
 
 ** Benchmarks
    We also need to download and unpack all quantified bit-vector
