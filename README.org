@@ -57,7 +57,10 @@
    If you want to run a simpler version of the experiments, the script
    =./runExperiments.sh= takes an optional parameter for custom
    timeout. Therefore =./runExperiments.sh 5= will run the experiments
-   with timeout of 5 seconds. This took about two hours on our machine.
+   with timeout of 5 seconds. This took about two hours on our
+   machine. The timeout can be any positive number, so you can for
+   example get results more similar to the ones in the paper by
+   running =./runExperiments.sh 60= or more.
 
    If you want to run the experiments with smaller amount or RAM, you
    can pass the desired amount to =./runExperiments.sh= as the third
