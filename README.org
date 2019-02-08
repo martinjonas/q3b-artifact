@@ -23,7 +23,7 @@
    result of cloning the repository
    https://github.com/martinjonas/q3b-artifact.git and running =bash
    /preparation/PREPARATION.sh= from the directory =artifact= and then
-   =sudo Rscript preparation/PREPARATION.R=, which are
+   =sudo Rscript preparation/PREPARATION.R=, which are both
    generated from the mentioned file
    =artifact/preparation/PREPARATION.org=. This org-mode file contains
    also results of some of the commands we have obtained during
@@ -77,8 +77,8 @@
    file correspond to the tables from the paper and should have
    exactly the same formatting. Actually, the tables in the paper are
    result of merely including LaTeX files =results/tables/solved.tex=
-   and =results/tables/cross.tex=, which are also included in the PDF
-   produced by the script.
+   and =results/tables/cross.tex= in the TeX source of the paper. The
+   same two files are also included in the PDF produced by the script.
 
    Again, if the reader is interested in details of processing the
    results, the scripts used in =./processResults.sh= are generated
@@ -105,7 +105,7 @@
 *** Usage
     The binary of Q3B is located at =artifact/solvers/Q3B/Q3B/build/q3b=.
 
-    To run Q3B with a input file =input.smt2=, run
+    To run Q3B with an input file =input.smt2=, run
     =artifact/solvers/Q3B/Q3B/build/q3b input.smt2=. To get all the available
     options, run =artifact/solvers/Q3B/Q3B/build/q3b --help=.
 
